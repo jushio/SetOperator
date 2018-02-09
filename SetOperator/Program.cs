@@ -11,21 +11,35 @@ namespace SetOperator
     {
         static void Main(string[] args)
         {
-            string dataDir = @"./dat";
-            string[] files = System.IO.Directory.GetFiles(
-                dataDir, "*", System.IO.SearchOption.AllDirectories);
-            if (files.Count() != 2)
-                throw new Exception();
+            if (args.Length != 3)
+            {
+                Console.WriteLine("SetOperator.exe @command @fileNameOfA @fileNameOfB");
+                return;
+            }
+            string cmd = args[0];
+            string fileNameA = args[1];
+            string fileNameB = args[2];
 
             List<string> a = new List<string>();
             List<string> b = new List<string>();
 
-            FileReadToList(files[0], ref a);
-            FileReadToList(files[1], ref b);
+            try
+            {
+                FileReadToList(fileNameA, ref a);
+                FileReadToList(fileNameB, ref b);
+            }
+            catch
+            {
+                Console.WriteLine("Exception: " + fileNameA + "か" + fileNameB + "の読出しエラー");
+                return;
+            }
 
             IEnumerable<string> seki = a.Intersect(b);
 
-            WriteAll<string>("res.txt", seki, s => s);
+            StringBuilder sb = new StringBuilder();
+            foreach (string i in seki)
+                sb.Append(i + "\n");
+            Console.Write(sb.ToString());
         }
 
         public static void Write(string path, string contents, bool append = false)
@@ -46,13 +60,16 @@ namespace SetOperator
 
         static void FileReadToList(string fileName, ref List<string> a)
         {
-            System.IO.StreamReader file =
-               new System.IO.StreamReader(fileName);
-            string line;
-            var delims = new char[] { '/', '_' };
-            while ((line = file.ReadLine()) != null)
+            using (
+                System.IO.StreamReader file =
+                   new System.IO.StreamReader(fileName))
             {
-                a.Add(line);
+                string line;
+                while ((line = file.ReadLine()) != null)
+                {
+                    a.Add(line);
+                }
+
             }
         }
     }
