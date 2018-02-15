@@ -34,12 +34,19 @@ namespace SetOperator
                 return;
             }
 
-            IEnumerable<string> seki = a.Intersect(b);
-
-            StringBuilder sb = new StringBuilder();
-            foreach (string i in seki)
-                sb.Append(i + "\n");
-            Console.Write(sb.ToString());
+            try
+            {
+                IEnumerable<string> res = SetOperator.Do(cmd, a, b);
+                StringBuilder sb = new StringBuilder();
+                foreach (string i in res)
+                    sb.Append(i + "\n");
+                Console.Write(sb.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
         }
 
         public static void Write(string path, string contents, bool append = false)
